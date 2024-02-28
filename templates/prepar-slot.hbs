@@ -1,0 +1,22 @@
+<div class="prepar-slot-content">
+    <div class="prepar-slot-background">
+        <img class="prepar-slot-backimg" src="{{background}}" alt="">
+    </div>
+    <div class="prepar-slot-foreground">
+        <div class="prepar-slot-panel">
+            <div class="prepar-slot-pool" {{#unless limitPool}}hidden="true" {{/unless}} draggable="false">{{pool.value}}/{{pool.max}}</div>
+            {{#each prepared as |slots|}}
+            {{#each slots as |slot|}}
+            <div {{#unless slot.empty}}draggable="true" {{/unless}} data-tooltip="{{slot.item.name}}"
+                class="prepar-slot-slot {{slot.empty}}" data-index="{{slot.slotIndex}}" data-id="{{slot.slotId}}"
+                style="{{#if slot.itemColor}}box-shadow: inset 0 0 10px {{slot.itemColor}}, 0 0 5px {{slot.itemColor}}, 0 0 15px #00ffe7; border-color: {{slot.itemColor}};{{/if}} background-image: url('{{#if slot.item.img}}{{slot.item.img}}{{else}}{{slot.image}}{{/if}}'); position: absolute; top: {{slot.y}}px; left: {{slot.x}}px">
+                <i draggable="false" class="fa-solid fa-lock prepar-slot-lock {{slot.slotLocked}}" {{#unless slot.slotLocked}}style="display:none;" {{/unless}}></i>
+                {{!-- <img {{#unless slot.slotLocked}}hidden="true" {{/unless}} draggable="false" class="prepar-slot-lock {{slot.slotLocked}}" src="icons/svg/door-locked-outline.svg" /> --}}
+                <div class="prepar-slot-slot-mark" {{#unless slot.slotMark}}hidden="true" {{/unless}} draggable="false">{{slot.slotMark}}</div>
+                <div class="prepar-slot-slot-use" {{#unless slot.showUsed}}hidden="true" {{/unless}}{{#if slot.empty}}hidden="true" {{/if}}  draggable="false">{{#if slot.showPool}}{{slot.slotUseNum}}{{else}}{{slot.slotUseCur}}/{{slot.slotUseMax}}{{/if}}</div>
+            </div>
+            {{/each}}
+            {{/each}}
+        </div>
+    </div>
+</div>

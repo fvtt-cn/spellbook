@@ -1,0 +1,149 @@
+:root {
+    --prepar-slot-slot-width: 60px;
+    --prepar-slot-flex-gap: 0.3rem;
+    --prepar-slot-main-color: #191005;
+    --prepar-slot-slot-hue-rotate: 160deg;
+}
+
+.prepar-slot .window-content,
+.spell-book .window-content {
+    margin: 0;
+    padding: 0;
+}
+
+.prepar-slot .prepar-slot-content,
+.spell-book .spell-book-content {
+    position: relative;
+    pointer-events: none;
+}
+
+.prepar-slot .prepar-slot-content .prepar-slot-background,
+.spell-book .spell-book-content .spell-book-background {
+    background-color: var(--prepar-slot-main-color);
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.prepar-slot .prepar-slot-content .prepar-slot-background .prepar-slot-backimg,
+.spell-book .spell-book-content .spell-book-background .spell-book-backimg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: none;
+    padding: 0;
+    margin: 0;
+    object-fit: cover;
+    pointer-events: all;
+}
+
+.prepar-slot .prepar-slot-content .prepar-slot-foreground,
+.spell-book .spell-book-content .spell-book-foreground {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.prepar-slot .prepar-slot-content .prepar-slot-foreground .prepar-slot-slot,
+.spell-book .spell-book-content .spell-book-foreground .spell-book-slot {
+    pointer-events: all;
+    width: var(--prepar-slot-slot-width);
+    height: var(--prepar-slot-slot-width);
+    aspect-ratio: 1;
+    color: var(--color-text-light-7);
+    text-align: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 3px ridge var(--prepar-slot-main-color);
+    box-shadow: inset 0 0 10px var(--prepar-slot-main-color);
+}
+
+.prepar-slot .prepar-slot-content .prepar-slot-foreground .prepar-slot-slot {
+    border-radius: 50%;
+    box-shadow: inset 0 0 10px #00ffe7, 0 0 10px #00ffe7;
+}
+
+.prepar-slot .prepar-slot-content .prepar-slot-foreground .prepar-slot-slot.prepar-slot-empty,
+.spell-book .spell-book-content .spell-book-foreground .spell-book-slot.spell-book-empty {
+    filter: sepia(1) brightness(0.6) hue-rotate(var(--prepar-slot-slot-hue-rotate));
+    mix-blend-mode: exclusion;
+    opacity: 0.6;
+}
+
+.prepar-slot .prepar-slot-content .prepar-slot-foreground .prepar-slot-slot[data-index=add],
+.spell-book .spell-book-content .spell-book-foreground .spell-book-slot[data-index=add] {
+    aspect-ratio: 3;
+}
+
+.prepar-slot .prepar-slot-content .prepar-slot-foreground .prepar-slot-slot i,
+.spell-book .spell-book-content .spell-book-foreground .spell-book-slot i {
+    pointer-events: none;
+}
+
+.prepar-slot .prepar-slot-content .prepar-slot-foreground .prepar-slot-lock {
+    opacity: 0.8;
+    padding: 0;
+    margin: 0;
+    border: none;
+    box-shadow: none;
+    line-height: var(--prepar-slot-slot-width);
+    font-size: 30px;
+    color: white;
+    text-shadow: 0 0 5px #00ffe7, 0 0 10px #00ffe7, 0 0 15px #00ffe7;
+}
+.prepar-slot .prepar-slot-content .prepar-slot-foreground .prepar-slot-pool,
+.prepar-slot .prepar-slot-content .prepar-slot-foreground .prepar-slot-slot-mark,
+.prepar-slot .prepar-slot-content .prepar-slot-foreground .prepar-slot-slot-use {
+    position: absolute;
+    background-color: darkslategray;
+    opacity: 0.8;
+    border: none;
+    box-shadow: none;
+    pointer-events: none;
+    text-align: center;
+    vertical-align: middle;
+    font-weight: bold;
+    color: white;
+    /* 发光字体 */
+    text-shadow: 0 0 5px #00ffe7, 0 0 10px #00ffe7, 0 0 15px #00ffe7;
+}
+.prepar-slot .prepar-slot-content .prepar-slot-foreground .prepar-slot-pool {
+    top: 0;
+    left: 0;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 0% 0% 50% 0%;
+    padding: 0px 10px;
+    font-size: large;
+    pointer-events: all;
+}
+.prepar-slot .prepar-slot-content .prepar-slot-foreground .prepar-slot-slot-mark {
+    top: 0;
+    left: 0;
+    width: 30%;
+    height: 30%;
+    line-height: 18px;
+    border-radius: 50%;
+}
+.prepar-slot .prepar-slot-content .prepar-slot-foreground .prepar-slot-slot-use {
+    width: 100%;
+    height: 30%;
+    bottom: 0;
+    line-height: 18px;
+    border-radius: 10px;
+    font-size: large;
+}
+
+.spell-book .spell-book-content .spell-book-foreground {
+    pointer-events: fill;
+}
+.spell-book .spell-book-content .spell-book-foreground .spell-book-page {
+    display: grid;
+    padding: 30px;
+    grid-template-columns: repeat(2, 60px);
+    grid-gap: 15px;
+}

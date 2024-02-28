@@ -1,0 +1,24 @@
+{
+  "name": "spellbook",
+  "title": "法术书",
+  "description": "提供一个独立于系统的法术书界面。",
+  "version": "1.0.1",
+  "author": "EternalRider",
+  "dependencies": [
+    {
+      "type": "module",
+      "name": "warpgate",
+      "manifest": "https://github.com/trioderegion/warpgate/releases/latest/download/module.json"
+    }
+  ],
+  "socket": true,
+  "esmodules": ["./scripts/init.js"],
+  "scripts": [],
+  "styles": [],
+  "packs": [],
+  "url": "https://github.com/EternalRider/spellbook",
+  "minimumCoreVersion": "11",
+  "compatibleCoreVersion": "11",
+  "manifest": "",
+  "download": ""
+}
