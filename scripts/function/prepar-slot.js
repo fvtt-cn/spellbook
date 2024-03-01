@@ -173,6 +173,27 @@ export class PreparSlot extends Application {
         //触发施展法术的钩子，你可以在你的模块中监听这个钩子
         Hooks.call("preparSlotCastSpell", this.actor, item, slot);
 
+        //系统耦合
+        if (game.system.id === "swade") {
+            if (item.type === "power" && item.parent == this.actor) {
+                await item.roll();
+            }
+        } else if (game.system.id === "dnd5e") {
+            if (item.type === "spell" && item.parent == this.actor) {
+                await item.use();
+            }
+        } else if (game.system.id === "D35E") {
+            if (item.type === "spell" && item.parent == this.actor) {
+                await item.roll();
+            }
+        } else {
+            if (item.use && item.parent == this.actor) {
+                await item.use();
+            } else if (item.roll && item.parent == this.actor) {
+                await item.roll();
+            }
+        }
+
         if (this.limit.type === "施展锁定") {
             currentFlag[slot.slotId][slot.slotIndex].slotLocked = true;
         } else if (this.limit.type === "可用次数") {
