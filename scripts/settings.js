@@ -1,6 +1,6 @@
 /* globals game, FormApplication, $ */
 
-import * as CONST from './constants.js'
+// import * as CONST from './constants.js'
 const MODULE_ID = 'spellbook';
 
 // export const settingVariables = [

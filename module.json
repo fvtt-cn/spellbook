@@ -2,7 +2,7 @@
   "name": "spellbook",
   "title": "法术书",
   "description": "提供一个独立于系统的法术书界面。",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": "EternalRider",
   "dependencies": [
     {
@@ -14,7 +14,9 @@
   "socket": true,
   "esmodules": ["./scripts/init.js"],
   "scripts": [],
-  "styles": [],
+  "styles": [
+    "./styles/module.css"
+  ],
   "packs": [],
   "url": "https://github.com/EternalRider/spellbook",
   "minimumCoreVersion": "11",

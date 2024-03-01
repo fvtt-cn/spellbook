@@ -6,7 +6,6 @@
 ## 使用效果
 ![91e50d2666d93105a8bca089ff61403b](https://github.com/EternalRider/spellbook/assets/46736326/fbbde62e-4171-441f-bb99-10a8bdcb7050)
 
-
 ## 操作方式
 ### 准备槽
 #### 法术槽
@@ -34,3 +33,10 @@
 #### 页边
 - 双击左侧页边：向前翻一页。
 - 双击右侧页边：向后翻一页。
+
+## API
+```
+const spellbook = game.modules.get('spellbook')?.api
+spellbook.openSpellSlot(actor,type);
+spellbook.openSpellBook(item);
+```

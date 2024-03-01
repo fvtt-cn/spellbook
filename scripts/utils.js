@@ -1,4 +1,4 @@
-import * as CONST from './constants.js'
+// import * as CONST from './constants.js'
 const MODULE_ID = 'spellbook';
 import { PreparSlot } from "./function/prepar-slot.js";
 import { SpellBook } from "./function/spell-book.js";
