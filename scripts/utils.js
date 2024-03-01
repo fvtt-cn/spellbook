@@ -218,7 +218,7 @@ export async function configItem(item, defaultType) {
       //配置法术书的底图、槽位图标和有多少页数
 
       //获取现有配置
-      let img = item.getFlag(MODULE_ID, "spell-book-img") ?? { background: "modules/swpt/img/spell-book.png", slot: "icons/sundries/documents/document-symbol-rune-tan.webp" };
+      let img = item.getFlag(MODULE_ID, "spell-book-img") ?? { background: "modules/spellbook/img/spell-book.png", slot: "icons/sundries/documents/document-symbol-rune-tan.webp" };
       let pageNum = item.getFlag(MODULE_ID, "spell-book-page") ?? { current: 1, max: 2 };
 
       //弹出对话框
@@ -244,7 +244,21 @@ export async function configItem(item, defaultType) {
           return;
         }
         pageNum.max = results.inputs[1];
-        let updates = { "flags.swpt.type": results.inputs[0], "flags.swpt.spell-book-page": pageNum, "flags.swpt.spell-book-img": { background: results.inputs[2], slot: results.inputs[3] } };
+        let prefix = "flags." + MODULE_ID;
+        // let updates = { "flags.swpt.type": results.inputs[0], "flags.swpt.spell-book-page": pageNum, "flags.swpt.spell-book-img": { background: results.inputs[2], slot: results.inputs[3] } };
+        let updates = {};
+        updates[prefix + ".type"] = results.inputs[0];
+        updates[prefix + ".spell-book-page"] = pageNum;
+        updates[prefix + ".spell-book-img"] = { background: results.inputs[2], slot: results.inputs[3] };
+        if (results.inputs[1]) {
+          let slot = results.inputs[1];
+          let slotNum = parseInt(slot);
+          let slotRing = [];
+          for (let i = 0; i < slotNum; i++) {
+            slotRing.push(i);
+          }
+          updates[prefix + ".slots-config"] = slotRing;
+        }
         await item.update(updates);
       }
     }
