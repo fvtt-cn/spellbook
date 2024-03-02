@@ -65,6 +65,7 @@ export class SpellBook extends Application {
     }
 
     mapSlots(k) {
+        // const slotName = game.settings.get(MODULE_ID, 'showSpellName') ? "spell-book-name" : "";
         return Object.entries(this.config.SLOTS[k]).map(([key, slots]) => {
             const slotData = [];
             for (let i = 0; i < slots.length; i++) {
@@ -79,6 +80,7 @@ export class SpellBook extends Application {
                     image: slots[i].img,
                     item,
                     itemColor,
+                    // slotName,
                     empty: item ? "" : "spell-book-empty",
                     current: ((k == "LEFT" && page == this.pageNum.current - 1) || (k == "RIGHT" && page == this.pageNum.current)) ? "spell-book-current-page" : "",
                 });
@@ -109,6 +111,7 @@ export class SpellBook extends Application {
             item: this.item,
             background: img.background,
             currentPage: this.pageNum.current,
+            showName: game.settings.get(MODULE_ID, 'showSpellName'),
         };
         Utilities.debug("getData", data);
         return data;

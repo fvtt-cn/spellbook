@@ -32,6 +32,14 @@ export function register_settings() {
         scope: 'world',
         config: true,
     });
+    game.settings.register(MODULE_ID, 'spellItemType', {
+        name: "系统法术类型",
+        hint: "系统法术类型，当系统的法术类型不为power或spell时使用此值",
+        type: String,
+        default: "",
+        scope: 'world',
+        config: true,
+    });
     game.settings.register(MODULE_ID, 'defaultSlotNum', {
         name: "默认准备槽数量",
         hint: "默认准备槽数量，当角色没有配置准备槽数量时初次打开准备槽时使用此值，以逗号分隔，第一个数只能是0或1",
@@ -43,6 +51,30 @@ export function register_settings() {
     game.settings.register(MODULE_ID, 'showItemButton', {
         name: "显示物品卡顶部按钮",
         hint: "显示物品卡顶部按钮，点击后打开法术书配置",
+        type: Boolean,
+        default: true,
+        scope: 'world',
+        config: true,
+    });
+    game.settings.register(MODULE_ID, 'showSpellName', {
+        name: "显示法术名称",
+        hint: "在准备槽和法术书中显示法术名称",
+        type: Boolean,
+        default: false,
+        scope: 'world',
+        config: true,
+    });
+    game.settings.register(MODULE_ID, 'autoAddSpell', {
+        name: "自动添加法术",
+        hint: "当添加到准备槽的法术不在角色上时自动添加到角色上",
+        type: Boolean,
+        default: true,
+        scope: 'world',
+        config: true,
+    });
+    game.settings.register(MODULE_ID, 'detectSameName', {
+        name: "自动添加检测重名",
+        hint: "启用自动添加法术时检测重名法术，如果有重名法术则不添加",
         type: Boolean,
         default: true,
         scope: 'world',

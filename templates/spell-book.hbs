@@ -7,9 +7,11 @@
             {{#each left as |slots|}}
             {{#each slots as |slot|}}
             <div {{#unless slot.empty}}draggable="true" {{/unless}} {{#unless slot.current}}hidden="true" {{/unless}}
-                data-tooltip="{{slot.item.name}}" class="spell-book-slot {{slot.empty}}" data-index="{{slot.slotIndex}}"
+                data-tooltip-class="item-tooltip" data-tooltip="{{#if slot.item.uuid}}<section class=&quot;loading&quot; data-uuid=&quot;{{slot.item.uuid}}&quot;>{{slot.item.name}}</section>{{/if}}" 
+                class="spell-book-slot {{slot.empty}}" data-index="{{slot.slotIndex}}"
                 data-id="{{slot.slotId}}"
                 style="{{#if slot.itemColor}}box-shadow: inset 0 0 10px {{slot.itemColor}}; border-color: {{slot.itemColor}};{{/if}} background-image: url('{{#if slot.item.img}}{{slot.item.img}}{{else}}{{slot.image}}{{/if}}'); ">
+                <div class="spell-book-slot-name" {{#unless @root.showName}}hidden="true" {{/unless}}{{#unless slot.item.name}}hidden="true" {{/unless}} draggable="false">{{slot.item.name}}</div>
             </div>
             {{/each}}
             {{/each}}
@@ -18,9 +20,11 @@
             {{#each right as |slots|}}
             {{#each slots as |slot|}}
             <div {{#unless slot.empty}}draggable="true" {{/unless}} {{#unless slot.current}}hidden="true" {{/unless}}
-                data-tooltip="{{slot.item.name}}" class="spell-book-slot {{slot.empty}}" data-index="{{slot.slotIndex}}"
+                data-tooltip-class="item-tooltip" data-tooltip="{{#if slot.item.uuid}}<section class=&quot;loading&quot; data-uuid=&quot;{{slot.item.uuid}}&quot;><i class=&quot;fas fa-spinner fa-spin-pulse&quot;></i></section>{{/if}}" 
+                class="spell-book-slot {{slot.empty}}" data-index="{{slot.slotIndex}}"
                 data-id="{{slot.slotId}}"
                 style="{{#if slot.itemColor}}box-shadow: inset 0 0 10px {{slot.itemColor}}; border-color: {{slot.itemColor}};{{/if}} background-image: url('{{#if slot.item.img}}{{slot.item.img}}{{else}}{{slot.image}}{{/if}}'); ">
+                <div class="spell-book-slot-name" {{#unless @root.showName}}hidden="true" {{/unless}}{{#unless slot.item.name}}hidden="true" {{/unless}} draggable="false">{{slot.item.name}}</div>
             </div>
             {{/each}}
             {{/each}}

@@ -80,6 +80,7 @@ export class PreparSlot extends Application {
     }
 
     mapSlots(k) {
+        // const slotName = game.settings.get(MODULE_ID, 'showSpellName') ? "prepar-slot-name" : "";
         return Object.entries(this.config.SLOTS[k]).map(([key, slots]) => {
             const slotData = [];
             for (let i = 0; i < slots.length; i++) {
@@ -109,12 +110,13 @@ export class PreparSlot extends Application {
                     y: y,
                     empty: item ? "" : "prepar-slot-empty",
                     slotLocked: (slotLocked && this.limit.type == "施展锁定") ? "prepar-slot-locked" : "",
-                    slotUseNum: slotUseNum,
-                    slotUseMax: slotUseMax,
-                    slotUseCur: slotUseCur,
-                    slotMark: slotMark,
-                    showUsed: (this.limit.type == "可用次数" || this.limit.type == "总点数池") ? "true" : "",
-                    showPool: this.limit.type == "总点数池" ? "true" : "",
+                    slotUseNum,
+                    slotUseMax,
+                    slotUseCur,
+                    slotMark,
+                    // slotName,
+                    // showUsed: (this.limit.type == "可用次数" || this.limit.type == "总点数池") ? "true" : "",
+                    // showPool: this.limit.type == "总点数池" ? "true" : "",
                 });
             }
             return slotData;
@@ -149,6 +151,9 @@ export class PreparSlot extends Application {
             limitLock: this.limit.type === "施展锁定" ? "true" : "",
             limitCount: this.limit.type === "可用次数" ? "true" : "",
             limitPool: this.limit.type === "总点数池" ? "true" : "",
+            showName: game.settings.get(MODULE_ID, 'showSpellName'),
+            showUsed: this.limit.type == "可用次数" || this.limit.type == "总点数池",
+            // showPool: this.limit.type == "总点数池",
             pool: { value: this.limit.poolValue, max: this.limit.poolMax }
         };
         Utilities.debug("getData", data);
@@ -484,11 +489,29 @@ export class PreparSlot extends Application {
         const fromPanel = data.fromPanel;
         const fromItemUuid = data.fromUuid;
         const panelType = data.panelType;
-        const item = await fromUuid(data.uuid);
+        let item = await fromUuid(data.uuid);
 
-        // if (item.type != "power") {
-        //     return;
-        // }
+        Utilities.debug("_onDrop", event, data, item, this.actor, item.type, (item.type != "power" && item.type != "spell" && item.type != game.settings.get(MODULE_ID, 'spellItemType')));
+        if (item.type != "power" && item.type != "spell" && item.type != game.settings.get(MODULE_ID, 'spellItemType')) {
+            return;
+        }
+
+        Utilities.debug("_onDrop", (game.settings.get(MODULE_ID, 'autoAddSpell') && item.parent != this.actor), item.clone);
+        if (game.settings.get(MODULE_ID, 'autoAddSpell') && item.parent != this.actor) {
+            if (game.settings.get(MODULE_ID, 'detectSameName')) {
+                let sameName = this.actor.items.find((i) => i.name === item.name);
+                if (sameName) {
+                    item = sameName;
+                } else {
+                    item = await this.actor.createEmbeddedDocuments("Item", [item.toObject()]);
+                    item = item[0];
+                }
+            } else {
+                item = await this.actor.createEmbeddedDocuments("Item", [item.toObject()]);
+                item = item[0];
+            }
+        }
+        Utilities.debug("_onDrop", item, item.type, item.parent, this.actor);
 
         const swapItems = draggedId !== undefined && draggedIndex !== undefined;
         const currentFlag = this.getSlots();
@@ -559,7 +582,7 @@ export class PreparSlot extends Application {
 
     _getHeaderButtons() {
         let buttons = super._getHeaderButtons();
-        if (game.user.isGM || game.settings.get(MODULE_ID, 'allowPlayerConfig')) {
+        if (game.user.isGM || game.settings.get(MODULE_ID, 'allowUserConfig')) {
             buttons.unshift({
                 class: "prepar-slot-actor-config",
                 icon: "fas fa-cog",
@@ -604,7 +627,7 @@ export class PreparSlot extends Application {
 
     async configure() {
         //如果非GM且不允许非GM用户配置，则返回
-        if (!game.user.isGM && !game.settings.get(MODULE_ID, 'allowPlayerConfig')) return;
+        if (!game.user.isGM && !game.settings.get(MODULE_ID, 'allowUserConfig')) return;
 
         //配置准备槽位的环数和每个环的槽位数量
         //配置背景图像和槽位图标
