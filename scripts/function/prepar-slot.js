@@ -140,7 +140,7 @@ export class PreparSlot extends Application {
         let config = this.actor.getFlag(MODULE_ID, this.prefix + "-config") ?? game.settings.get(MODULE_ID, 'defaultSlotNum') ?? "0,3";
         // this.numShow = this.actor.getFlag(MODULE_ID, this.prefix + "-numShow") ?? "隐藏";
         this.limit = this.actor.getFlag(MODULE_ID, this.prefix + "-limit") ?? { type: "无", target: "槽位", poolValue: 1, poolMax: 1 };
-        let img = this.actor.getFlag(MODULE_ID, this.prefix + "-img") ?? { background: "modules/spellbook/img/spell-slot-background.png", slot: "icons/magic/symbols/circled-gem-pink.webp" };
+        let img = this.actor.getFlag(MODULE_ID, this.prefix + "-img") ?? { background: "modules/spellbook/img/spell-slot-background.webp", slot: "icons/magic/symbols/circled-gem-pink.webp" };
         // this.config = { SLOTS: { PREPARED: Object.entries(config).map(([level, slots]) => Array(slots).fill({ img: img.slot })) } };
         this.config = { SLOTS: { PREPARED: config.split(",").map((slots) => Array(parseInt(slots)).fill({ img: img.slot })) } };
         const data = {
@@ -636,7 +636,7 @@ export class PreparSlot extends Application {
         //获取现有配置
         // let prefix = PreparSlot.APP_ID + this.type;
         // let config = this.actor.getFlag(MODULE_ID, this.prefix + "-config") ?? [0, 3];
-        let img = this.actor.getFlag(MODULE_ID, this.prefix + "-img") ?? { background: "modules/spellbook/img/spell-slot-background.png", slot: "icons/magic/symbols/circled-gem-pink.webp" };
+        let img = this.actor.getFlag(MODULE_ID, this.prefix + "-img") ?? { background: "modules/spellbook/img/spell-slot-background.webp", slot: "icons/magic/symbols/circled-gem-pink.webp" };
         // let text = config.map((slots) => `${slots}`).join(",");
         let config = this.actor.getFlag(MODULE_ID, this.prefix + "-config") ?? game.settings.get(MODULE_ID, 'defaultSlotNum') ?? "0,3";
         let limit = this.actor.getFlag(MODULE_ID, this.prefix + "-limit") ?? { type: "无", target: "槽位", poolValue: 1, poolMax: 1 };

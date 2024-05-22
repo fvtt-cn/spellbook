@@ -103,7 +103,7 @@ export class SpellBook extends Application {
         //     }
         // };
         this.pageNum = this.item.getFlag(MODULE_ID, "spell-book-page") ?? { current: 1, max: 2 };
-        let img = this.item.getFlag(MODULE_ID, "spell-book-img") ?? { background: "modules/spellbook/img/spell-book.png", slot: "icons/sundries/documents/document-symbol-rune-tan.webp" };
+        let img = this.item.getFlag(MODULE_ID, "spell-book-img") ?? { background: "modules/spellbook/img/spell-book.webp", slot: "icons/sundries/documents/document-symbol-rune-tan.webp" };
         this.config = { SLOTS: { LEFT: Array(Math.ceil(this.pageNum.max / 2)).fill(Array(6).fill({ img: img.slot })), RIGHT: Array(Math.floor(this.pageNum.max / 2)).fill(Array(6).fill({ img: img.slot })) } };
         const data = {
             left: this.mapSlots("LEFT"),
