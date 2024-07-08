@@ -12,7 +12,7 @@ export class PreparSlot extends Application {
         this.type = type == "" ? undefined : type;
         this.prefix = PreparSlot.APP_ID + (this.type ? "-" + this.type : "");
         let config = this.actor.getFlag(MODULE_ID, this.prefix + "-config") ?? game.settings.get(MODULE_ID, 'defaultSlotNum') ?? "0,3";
-        let slotRing = config.split(",");
+        let slotRing = config.replaceAll(/，/g, ",").split(",");
         if (slotRing.length >= 4) {
             this.width = 130 * slotRing.length;
         }
@@ -33,7 +33,7 @@ export class PreparSlot extends Application {
     }
 
     get title() {
-        return this.actor.name;
+        return this.actor.name + (this.type ? "-" + this.type : "");
     }
 
     get width() {
@@ -79,13 +79,13 @@ export class PreparSlot extends Application {
         return foundry.utils.deepClone(this.actor.getFlag(MODULE_ID, this.prefix + "-slots") ?? {});
     }
 
-    mapSlots(k) {
+    async mapSlots(k) {
         // const slotName = game.settings.get(MODULE_ID, 'showSpellName') ? "prepar-slot-name" : "";
-        return Object.entries(this.config.SLOTS[k]).map(([key, slots]) => {
+        return Object.entries(this.config.SLOTS[k]).map(async ([key, slots]) => {
             const slotData = [];
             for (let i = 0; i < slots.length; i++) {
                 const itemUuid = this.slots[key]?.[i]?.id;
-                const item = itemUuid ? fromUuidSync(itemUuid) : null;
+                const item = itemUuid ? await fromUuid(itemUuid) : null;
                 const itemColor = item ? Utilities.getItemColor(item) ?? "#00ffe7" : "#00ffe7";
                 const slotLocked = this.slots[key]?.[i]?.slotLocked ?? false;
                 const slotUseNum = this.slots[key]?.[i]?.slotUseNum ?? 1;
@@ -142,9 +142,10 @@ export class PreparSlot extends Application {
         this.limit = this.actor.getFlag(MODULE_ID, this.prefix + "-limit") ?? { type: "无", target: "槽位", poolValue: 1, poolMax: 1 };
         let img = this.actor.getFlag(MODULE_ID, this.prefix + "-img") ?? { background: "modules/spellbook/img/spell-slot-background.webp", slot: "icons/magic/symbols/circled-gem-pink.webp" };
         // this.config = { SLOTS: { PREPARED: Object.entries(config).map(([level, slots]) => Array(slots).fill({ img: img.slot })) } };
-        this.config = { SLOTS: { PREPARED: config.split(",").map((slots) => Array(parseInt(slots)).fill({ img: img.slot })) } };
+        this.config = { SLOTS: { PREPARED: config.replaceAll(/，/g, ",").split(",").map((slots) => Array(parseInt(slots)).fill({ img: img.slot })) } };
+        let prepared = await Promise.all(await this.mapSlots("PREPARED"));
         const data = {
-            prepared: this.mapSlots("PREPARED"),
+            prepared: prepared,
             actor: this.actor,
             background: img.background,
             // slotImg: img.slot,
@@ -235,7 +236,7 @@ export class PreparSlot extends Application {
         event.stopPropagation();
         if (this.limit.type !== "总点数池") return;
         if (event.altKey) {
-            let results = await warpgate.menu({
+            let results = await Utilities.menu({
                 inputs: [
                     { type: 'number', label: '当前点数：', options: this.limit.poolValue },
                 ],
@@ -258,7 +259,7 @@ export class PreparSlot extends Application {
             }
             await this.actor.setFlag(MODULE_ID, this.prefix + "-limit", this.limit);
         } else if (event.ctrlKey) {
-            let results = await warpgate.menu({
+            let results = await Utilities.menu({
                 inputs: [
                     { type: 'number', label: '最大点数：', options: this.limit.poolMax },
                 ],
@@ -288,7 +289,7 @@ export class PreparSlot extends Application {
         const slotIndex = event.currentTarget.dataset.index;
         const slotId = event.currentTarget.dataset.id;
         const itemUuid = this.slots[slotId]?.[slotIndex]?.id;
-        const item = itemUuid ? fromUuidSync(itemUuid) : null;
+        const item = itemUuid ? await fromUuid(itemUuid) : null;
         if (!item) return;
         this.cast_spell(item, { slotId, slotIndex });
     }
@@ -298,7 +299,7 @@ export class PreparSlot extends Application {
     //     const slotIndex = event.currentTarget.dataset.index;
     //     const slotId = event.currentTarget.dataset.id;
     //     const itemUuid = this.slots[slotId]?.[slotIndex]?.id;
-    //     const item = itemUuid ? fromUuidSync(itemUuid) : null;
+    //     const item = itemUuid ? await fromUuid(itemUuid) : null;
     //     if (!item) return;
     //     item.sheet.render(true);
     // }
@@ -318,7 +319,7 @@ export class PreparSlot extends Application {
                 currentFlag[slotId][slotIndex].slotLocked = currentFlag[slotId][slotIndex]?.slotLocked ? false : true;
             } else if (this.limit.type === "可用次数") {
                 //弹出对话框
-                let results = await warpgate.menu({
+                let results = await Utilities.menu({
                     inputs: [
                         { type: 'number', label: '当前次数：', options: currentFlag[slotId][slotIndex]?.slotUseCur ?? 1 },
                     ],
@@ -344,7 +345,7 @@ export class PreparSlot extends Application {
         } else if (event.ctrlKey) {
             if (this.limit.type === "可用次数") {
                 //弹出对话框
-                let results = await warpgate.menu({
+                let results = await Utilities.menu({
                     inputs: [
                         { type: 'number', label: '最大次数：', options: currentFlag[slotId][slotIndex]?.slotUseMax ?? 1 },
                     ],
@@ -367,7 +368,7 @@ export class PreparSlot extends Application {
                 }
             } else if (this.limit.type === "总点数池") {
                 //弹出对话框
-                let results = await warpgate.menu({
+                let results = await Utilities.menu({
                     inputs: [
                         { type: 'number', label: '消耗点数：', options: currentFlag[slotId][slotIndex]?.slotUseNum ?? 1 },
                     ],
@@ -398,7 +399,7 @@ export class PreparSlot extends Application {
         } else if (event.shiftKey) {
             //修改槽位标记
             //弹出对话框
-            let results = await warpgate.menu({
+            let results = await Utilities.menu({
                 inputs: [
                     { type: 'text', label: '槽位标记：', options: currentFlag[slotId][slotIndex]?.slotMark ?? "" },
                 ],
@@ -418,7 +419,7 @@ export class PreparSlot extends Application {
         } else {
             //open sheet
             const itemUuid = this.slots[slotId]?.[slotIndex]?.id;
-            const item = itemUuid ? fromUuidSync(itemUuid) : null;
+            const item = itemUuid ? await fromUuid(itemUuid) : null;
             if (!item) return;
             item.sheet.render(true);
         }
@@ -545,7 +546,7 @@ export class PreparSlot extends Application {
                     // delete swapTemp;
                 }
             } else if (fromPanel == SpellBook.APP_ID) {
-                const openWindow = Object.values(ui.windows).find((w) => (w instanceof SpellBook) && w?.item?.uuid == fromUuid);
+                const openWindow = Object.values(ui.windows).find((w) => (w instanceof SpellBook) && w?.item?.uuid == fromItemUuid);
                 if (openWindow) {
                     openWindow.dropOccurred = true;
                 }
@@ -652,7 +653,7 @@ export class PreparSlot extends Application {
         // });
 
         //弹出对话框
-        let results = await warpgate.menu({
+        let results = await Utilities.menu({
             inputs: [
                 { type: 'text', label: '槽位配置：', options: config },
                 { type: 'text', label: '背景图像：', options: img.background },
@@ -673,13 +674,13 @@ export class PreparSlot extends Application {
         //更新配置
         if (results.buttons === "OK") {
             // let newConfig = [];
-            // results.inputs[0].split(",").forEach((item) => {
+            // results.inputs[0].replaceAll(/，/g, ",").split(",").forEach((item) => {
             //     let [level, slots] = item.split(":");
             //     level = parseInt(level) ?? 0;
             //     newConfig[level] = parseInt(slots) ?? 1;
             // });
             let prefix = "flags." + MODULE_ID + "." + this.prefix;
-            // let newConfig = results.inputs[0].split(",").map((item) => parseInt(item) ?? 1);
+            // let newConfig = results.inputs[0].replaceAll(/，/g, ",").split(",").map((item) => parseInt(item) ?? 1);
             // if (newConfig[0] > 1) newConfig = 1;
             if (results.inputs[0][0] > 1) {
                 results.inputs[0] = "1" + results.inputs[0].slice(1);

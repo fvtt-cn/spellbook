@@ -64,14 +64,14 @@ export class SpellBook extends Application {
         return foundry.utils.deepClone(this.item.getFlag(MODULE_ID, SpellBook.APP_ID + "-slots") ?? {});
     }
 
-    mapSlots(k) {
+    async mapSlots(k) {
         // const slotName = game.settings.get(MODULE_ID, 'showSpellName') ? "spell-book-name" : "";
-        return Object.entries(this.config.SLOTS[k]).map(([key, slots]) => {
+        return Object.entries(this.config.SLOTS[k]).map(async ([key, slots]) => {
             const slotData = [];
             for (let i = 0; i < slots.length; i++) {
                 const page = (key * 2) + (k == "LEFT" ? 0 : 1);
                 const itemUuid = this.slots[page]?.[i]?.id;
-                const item = itemUuid ? fromUuidSync(itemUuid) : null;
+                const item = itemUuid ? await fromUuid(itemUuid) : null;
                 const itemColor = item ? Utilities.getItemColor(item) ?? "" : "";
 
                 slotData.push({
@@ -105,9 +105,11 @@ export class SpellBook extends Application {
         this.pageNum = this.item.getFlag(MODULE_ID, "spell-book-page") ?? { current: 1, max: 2 };
         let img = this.item.getFlag(MODULE_ID, "spell-book-img") ?? { background: "modules/spellbook/img/spell-book.webp", slot: "icons/sundries/documents/document-symbol-rune-tan.webp" };
         this.config = { SLOTS: { LEFT: Array(Math.ceil(this.pageNum.max / 2)).fill(Array(6).fill({ img: img.slot })), RIGHT: Array(Math.floor(this.pageNum.max / 2)).fill(Array(6).fill({ img: img.slot })) } };
+        let left = await Promise.all(await this.mapSlots("LEFT"));
+        let right = await Promise.all(await this.mapSlots("RIGHT"));
         const data = {
-            left: this.mapSlots("LEFT"),
-            right: this.mapSlots("RIGHT"),
+            left: left,
+            right: right,
             item: this.item,
             background: img.background,
             currentPage: this.pageNum.current,
@@ -159,7 +161,7 @@ export class SpellBook extends Application {
     //     const slotIndex = event.currentTarget.dataset.index;
     //     const slotId = event.currentTarget.dataset.id;
     //     const itemUuid = this.slots[slotId]?.[slotIndex]?.id;
-    //     const item = itemUuid ? fromUuidSync(itemUuid) : null;
+    //     const item = itemUuid ? await fromUuid(itemUuid) : null;
     //     if (!item) return;
     //     item.sheet.render(true);
     // }
@@ -171,7 +173,7 @@ export class SpellBook extends Application {
         const slotIndex = event.currentTarget.dataset.index;
         const slotId = event.currentTarget.dataset.id;
         const itemUuid = this.slots[slotId]?.[slotIndex]?.id;
-        const item = itemUuid ? fromUuidSync(itemUuid) : null;
+        const item = itemUuid ? await fromUuid(itemUuid) : null;
         if (!item) return;
         item.sheet.render(true);
     }
