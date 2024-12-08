@@ -35,7 +35,7 @@ export class SpellBook extends Application {
     }
 
     static get defaultOptions() {
-        return mergeObject(super.defaultOptions, {
+        return foundry.utils.mergeObject(super.defaultOptions, {
             id: this.APP_ID,
             template: `modules/${MODULE_ID}/templates/${this.APP_ID}.hbs`,
             popOut: true,

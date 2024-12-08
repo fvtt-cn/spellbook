@@ -45,7 +45,7 @@ export class PreparSlot extends Application {
     }
 
     static get defaultOptions() {
-        return mergeObject(super.defaultOptions, {
+        return foundry.utils.mergeObject(super.defaultOptions, {
             id: this.APP_ID,
             template: `modules/${MODULE_ID}/templates/${this.APP_ID}.hbs`,
             popOut: true,
@@ -168,10 +168,10 @@ export class PreparSlot extends Application {
             Utilities.notice('info', "法术已锁定，无法施展！");
             return;
         } else if ((this.limit.type === "可用次数") && (currentFlag[slot.slotId][slot.slotIndex]?.slotUseCur ?? 0) <= 0) {
-            Utilities.notice('info', "法术次数已用完，无法施展！");
+            Utilities.notice('info', "法术次数不足，无法施展！");
             return;
-        } else if ((this.limit.type === "总点数池") && (this.limit.poolValue <= 0)) {
-            Utilities.notice('info', "法术点数已用完，无法施展！");
+        } else if ((this.limit.type === "总点数池") && (this.limit.poolValue < (currentFlag[slot.slotId][slot.slotIndex]?.slotUseNum ?? 1))) {
+            Utilities.notice('info', "法术点数不足，无法施展！");
             return;
         }
 
@@ -552,9 +552,17 @@ export class PreparSlot extends Application {
                 }
             } else if (fromPanel == PreparSlot.APP_ID && fromItemUuid != this.actor.uuid) {
                 Utilities.notice('error', "请不要将其他角色的法术拖动至此！");
+                const openWindow = Object.values(ui.windows).find((w) => (w instanceof PreparSlot) && w?.actor?.uuid == fromItemUuid);
+                if (openWindow) {
+                    openWindow.dropOccurred = false;
+                }
                 return;
             } else if (fromPanel == PreparSlot.APP_ID && fromItemUuid == this.actor.uuid && this.type != panelType) {
                 Utilities.notice('error', "请不要在不同类型的法术槽之间拖动！");
+                const openWindow = Object.values(ui.windows).find((w) => (w instanceof PreparSlot) && w?.actor?.uuid == fromItemUuid);
+                if (openWindow) {
+                    openWindow.dropOccurred = false;
+                }
                 return;
             }
         } else if (this.limit.target === "法术") {
